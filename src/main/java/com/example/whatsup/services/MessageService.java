@@ -2,7 +2,7 @@ package com.example.whatsup.services;
 
 import com.example.whatsup.configuration.WhatsUpAPIConfiguration;
 import com.example.whatsup.dto.Instance.InstanceDTO;
-import com.example.whatsup.dto.findmessage.ResponseFindMessageDTO;
+import com.example.whatsup.dto.message.ResponseMessageDTO;
 import com.example.whatsup.dto.sendmessage.SendMessageDTO;
 import com.example.whatsup.dto.sendmessage.TextMessageDTO;
 import org.springframework.core.ParameterizedTypeReference;
@@ -40,11 +40,11 @@ public class MessageService {
         return list;
     }
 
-    public List<ResponseFindMessageDTO> findMessage() {
+    public List<ResponseMessageDTO> findMessage() {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("remoteJid", "5519982803135@s.whatsapp.net");
         HttpEntity<?> entity = new HttpEntity<>(body, this.whatsUpAPIConfiguration.getHeaders());
-        ResponseEntity<List<ResponseFindMessageDTO>> instance = restTemplate.exchange(
+        ResponseEntity<List<ResponseMessageDTO>> instance = restTemplate.exchange(
                 "http://localhost:8080/chat/findMessages/Andrei", HttpMethod.POST, entity,
                 new ParameterizedTypeReference<>() {
                     @Override
@@ -53,7 +53,7 @@ public class MessageService {
                     }
                 }
         );
-        List<ResponseFindMessageDTO> list = instance.getBody();
+        List<ResponseMessageDTO> list = instance.getBody();
         return list;
     }
 
@@ -64,7 +64,7 @@ public class MessageService {
         HttpEntity<SendMessageDTO> entity = new HttpEntity<>(sendMessage, this.whatsUpAPIConfiguration.getHeaders());
 
         var response = new RestTemplate().postForObject("http://localhost:8080/message/sendText/Andrei", entity
-        , ResponseFindMessageDTO.class);
+        , ResponseMessageDTO.class);
     }
 
 }

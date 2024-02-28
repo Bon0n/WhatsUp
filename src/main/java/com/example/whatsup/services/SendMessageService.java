@@ -1,42 +1,45 @@
 package com.example.whatsup.services;
 
+import com.example.whatsup.configuration.TypeBotAPIConfiguration;
 import com.example.whatsup.configuration.WhatsUpAPIConfiguration;
-import com.example.whatsup.dto.Instance.InstanceDTO;
-import com.example.whatsup.dto.findmessage.ResponseFindMessageDTO;
+import com.example.whatsup.dto.message.ResponseMessageDTO;
 import com.example.whatsup.dto.sendmessage.SendMessageDTO;
 import com.example.whatsup.dto.sendmessage.TextMessageDTO;
-import org.springframework.core.ParameterizedTypeReference;
+import com.example.whatsup.dto.typebot.ResponseTypeBotStartChatDTO;
+import com.example.whatsup.dto.typebot.ResponseTypeBotStartChatMessagesDTO;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class SendMessageService {
-    private RestTemplate restTemplate;
-    private WhatsUpAPIConfiguration whatsUpAPIConfiguration;
+    private final RestTemplate restTemplate;
+    private final WhatsUpAPIConfiguration whatsUpAPIConfiguration;
+    private final TypeBotAPIConfiguration typeBotAPIConfiguration;
 
-    public SendMessageService(RestTemplate restTemplate, WhatsUpAPIConfiguration whatsUpAPIConfiguration) {
+    public SendMessageService(
+            RestTemplate restTemplate,
+            WhatsUpAPIConfiguration whatsUpAPIConfiguration,
+            TypeBotAPIConfiguration typeBotAPIConfiguration
+    ) {
         this.restTemplate = restTemplate;
         this.whatsUpAPIConfiguration = whatsUpAPIConfiguration;
+        this.typeBotAPIConfiguration = typeBotAPIConfiguration;
     }
 
     public void sendMessage(String message, String number) {
         TextMessageDTO text = new TextMessageDTO(message);
         SendMessageDTO sendMessage = new SendMessageDTO(number, text);
 
-        HttpEntity<SendMessageDTO> entity = new HttpEntity<>(sendMessage, this.whatsUpAPIConfiguration.getHeaders());
+        HttpEntity<SendMessageDTO> whatsUpEntity = new HttpEntity<>(sendMessage, this.whatsUpAPIConfiguration.getHeaders());
 
-        var response = new RestTemplate().postForObject("http://localhost:8080/message/sendText/Andrei", entity
-                , ResponseFindMessageDTO.class);
+        var response = new RestTemplate().postForObject("http://localhost:8080/message/sendText/Andrei", whatsUpEntity
+                , ResponseMessageDTO.class);
+
 
 
     }
-
 }
