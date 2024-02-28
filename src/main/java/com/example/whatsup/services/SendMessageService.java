@@ -21,22 +21,21 @@ import java.util.List;
 public class SendMessageService {
     private RestTemplate restTemplate;
     private WhatsUpAPIConfiguration whatsUpAPIConfiguration;
-    public SendMessageService(RestTemplate restTemplate, WhatsUpAPIConfiguration whatsUpAPIConfiguration)
-    {
+
+    public SendMessageService(RestTemplate restTemplate, WhatsUpAPIConfiguration whatsUpAPIConfiguration) {
         this.restTemplate = restTemplate;
         this.whatsUpAPIConfiguration = whatsUpAPIConfiguration;
     }
 
-    public void sendMessage() {
-        TextMessageDTO text = new TextMessageDTO("te amo te amo te amo");
-        SendMessageDTO sendMessage = new SendMessageDTO("19982803135", text);
+    public void sendMessage(String message, String number) {
+        TextMessageDTO text = new TextMessageDTO(message);
+        SendMessageDTO sendMessage = new SendMessageDTO(number, text);
 
         HttpEntity<SendMessageDTO> entity = new HttpEntity<>(sendMessage, this.whatsUpAPIConfiguration.getHeaders());
 
-        while(true) {
-            var response = new RestTemplate().postForObject("http://localhost:8080/message/sendText/Andrei", entity
-                    , ResponseFindMessageDTO.class);
-        }
+        var response = new RestTemplate().postForObject("http://localhost:8080/message/sendText/Andrei", entity
+                , ResponseFindMessageDTO.class);
+
 
     }
 
