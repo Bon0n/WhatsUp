@@ -1,8 +1,6 @@
 package com.example.whatsup.controller;
 
-import com.example.whatsup.dto.InstanceDTO;
-import com.example.whatsup.dto.findmessage.ResponseFindMessageDTO;
-import com.example.whatsup.dto.sendmessage.SendMessageDTO;
+import com.example.whatsup.dto.Instance.InstanceDTO;
 import com.example.whatsup.services.MessageService;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +18,7 @@ public class MessageController {
 
     @GetMapping
     public List<InstanceDTO> getMessages() {
-        return this.messageService.getMessage();
+        return this.messageService.getInstance();
     }
 
     /*

@@ -1,4 +1,4 @@
-package com.example.whatsup.dto;
+package com.example.whatsup.dto.Instance;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

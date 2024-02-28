@@ -1,14 +1,12 @@
 package com.example.whatsup.services;
 
-import com.example.whatsup.dto.InstanceDTO;
+import com.example.whatsup.configuration.WhatsUpAPIConfiguration;
+import com.example.whatsup.dto.Instance.InstanceDTO;
 import com.example.whatsup.dto.findmessage.ResponseFindMessageDTO;
 import com.example.whatsup.dto.sendmessage.SendMessageDTO;
 import com.example.whatsup.dto.sendmessage.TextMessageDTO;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -20,15 +18,15 @@ import java.util.List;
 @Service
 public class MessageService {
     private RestTemplate restTemplate;
-    public MessageService(RestTemplate restTemplate)
+    private WhatsUpAPIConfiguration whatsUpAPIConfiguration;
+    public MessageService(RestTemplate restTemplate, WhatsUpAPIConfiguration whatsUpAPIConfiguration)
     {
         this.restTemplate = restTemplate;
+        this.whatsUpAPIConfiguration = whatsUpAPIConfiguration;
     }
 
-    public List<InstanceDTO> getMessage() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("apikey", "B6D711FCDE4D4FD5936544120E713976");
-        HttpEntity<String> entity = new HttpEntity<>(headers);
+    public List<InstanceDTO> getInstance() {
+        HttpEntity<String> entity = new HttpEntity<>(this.whatsUpAPIConfiguration.getHeaders());
         ResponseEntity<List<InstanceDTO>> instance = restTemplate.exchange(
                 "http://localhost:8080/instance/fetchInstances", HttpMethod.GET, entity,
                 new ParameterizedTypeReference<>() {
@@ -43,11 +41,9 @@ public class MessageService {
     }
 
     public List<ResponseFindMessageDTO> findMessage() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("apikey", "B6D711FCDE4D4FD5936544120E713976");
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("remoteJid", "5519982803135@s.whatsapp.net");
-        HttpEntity<?> entity = new HttpEntity<>(body, headers);
+        HttpEntity<?> entity = new HttpEntity<>(body, this.whatsUpAPIConfiguration.getHeaders());
         ResponseEntity<List<ResponseFindMessageDTO>> instance = restTemplate.exchange(
                 "http://localhost:8080/chat/findMessages/Andrei", HttpMethod.POST, entity,
                 new ParameterizedTypeReference<>() {
@@ -62,23 +58,13 @@ public class MessageService {
     }
 
     public void sendMessage() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("apikey", "B6D711FCDE4D4FD5936544120E713976");
-        /*
-        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("number", "19982803135");
-        body.add("textMessage", "Oi mozudaaaaaaaaaaaa");
-
-         */
-        HttpEntity<?> entity = new HttpEntity<>(headers);
         TextMessageDTO text = new TextMessageDTO("Oiiii mozudaaaaaaaa");
         SendMessageDTO sendMessage = new SendMessageDTO("19982803135", text);
-        restTemplate.exchange(
-                "http://localhost:8080/message/sendText/Andrei",
-                HttpMethod.POST,
-                entity,
-                SendMessageDTO.class
-        );
+
+        HttpEntity<SendMessageDTO> entity = new HttpEntity<>(sendMessage, this.whatsUpAPIConfiguration.getHeaders());
+
+        var response = new RestTemplate().postForObject("http://localhost:8080/message/sendText/Andrei", entity
+        , ResponseFindMessageDTO.class);
     }
 
 }
