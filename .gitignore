@@ -35,3 +35,6 @@ build/
 
 ### Application Properties ###
 *.properties
+
+### Java configuration ###
+./src/main/java/com/example/whatsup/configuration/
